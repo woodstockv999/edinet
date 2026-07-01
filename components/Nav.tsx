@@ -22,7 +22,7 @@ export default function Nav({ demoMode }: { demoMode: boolean }) {
   return (
     <header className="bg-navy sticky top-0 z-30 shadow-lg">
       {/* パンくず行（ポータル › アプリ名。BASEと同じ構成） */}
-      <div className="max-w-6xl mx-auto px-4 pt-2.5 flex items-center gap-1.5 text-2xs">
+      <div className="max-w-6xl mx-auto px-4 pt-3.5 flex items-center gap-1.5 text-2xs">
         <a href="/" className="text-navy-muted transition-colors hover:text-white/80" title="アプリ一覧へ戻る">
           🏠 ポータル
         </a>
