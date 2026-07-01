@@ -2,7 +2,7 @@ module.exports = {
   apps: [{
     name: "edinet",
     script: "node_modules/.bin/next",
-    args: "start -p 3006",
+    args: "start -p 3010",
     cwd: __dirname,
     env: {
       NODE_ENV: "production",
