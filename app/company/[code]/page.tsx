@@ -19,10 +19,12 @@ export default async function CompanyPage({ params }: Props) {
   const company = await getCompanyDetail(code);
   if (!company) notFound();
 
+  // 実データモードではXBRL未解析のため financials が空の場合がある（getCompanyDetail 参照）
+  const hasFinancials = company.financials.length > 0;
   const latest = company.financials[company.financials.length - 1];
   const prev   = company.financials[company.financials.length - 2];
 
-  const kpis = [
+  const kpis = hasFinancials ? [
     { label: "売上高",    value: formatJPY(latest.netSales),        yoy: yoyLabel(latest.netSales, prev?.netSales) },
     { label: "営業利益",  value: formatJPY(latest.operatingIncome), yoy: yoyLabel(latest.operatingIncome, prev?.operatingIncome) },
     { label: "純利益",    value: formatJPY(latest.netIncome),       yoy: yoyLabel(latest.netIncome, prev?.netIncome) },
@@ -31,7 +33,7 @@ export default async function CompanyPage({ params }: Props) {
     { label: "営業利益率",value: formatRate(latest.operatingMargin), yoy: yoyLabel(latest.operatingMargin ?? 0, prev?.operatingMargin) },
     { label: "ROE",      value: formatRate(latest.roe),             yoy: "" },
     { label: "EPS",      value: latest.eps ? `¥${latest.eps.toLocaleString()}` : "—", yoy: yoyLabel(latest.eps ?? 0, prev?.eps) },
-  ];
+  ] : [];
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-6 space-y-8">
@@ -67,6 +69,8 @@ export default async function CompanyPage({ params }: Props) {
         </div>
       </div>
 
+      {hasFinancials ? (
+      <>
       {/* KPIグリッド */}
       <div>
         <SectionHeader title={`財務ハイライト（${latest.period}）`} />
@@ -140,6 +144,12 @@ export default async function CompanyPage({ params }: Props) {
           </table>
         </div>
       </div>
+      </>
+      ) : (
+        <div className="bg-paper-surface border border-paper-border rounded-lg p-4 text-xs text-ink-muted">
+          財務データは現在取得できません（書類本文の解析が必要なため、実データモードでは未対応です）。
+        </div>
+      )}
 
       {/* 最新開示書類 */}
       {company.recentFilings.length > 0 && (
