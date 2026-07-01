@@ -11,7 +11,7 @@ const LINKS = [
   { href: "/compare", label: "企業比較" },
 ];
 
-export default function Nav() {
+export default function Nav({ demoMode }: { demoMode: boolean }) {
   const path = usePathname();
   const base = process.env.NEXT_PUBLIC_BASE_PATH || "";
   const active = (href: string) => {
@@ -29,7 +29,7 @@ export default function Nav() {
         </Link>
         <div className="flex items-center gap-2">
           <span className="text-2xs text-navy-muted hidden sm:block">金融庁 EDINET 連携</span>
-          <DemoTag />
+          {demoMode && <DemoTag />}
         </div>
       </div>
       {/* ナビ行 */}
@@ -53,7 +53,6 @@ export default function Nav() {
 }
 
 function DemoTag() {
-  // サーバーサイドでは判定できないのでクライアントで表示
   return (
     <span className="text-2xs bg-accent/20 text-accent border border-accent/30 rounded px-1.5 py-0.5 font-bold">
       DEMO

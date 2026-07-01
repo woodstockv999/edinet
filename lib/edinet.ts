@@ -53,12 +53,14 @@ export async function getBulkReports(date?: string): Promise<BulkReport[]> {
   const d = date ?? new Date().toISOString().slice(0, 10);
   const filings = await getFilings(d, 120);
 
+  // 保有割合・株式数は書類本文（XBRL）の解析が必要でここでは取得できないため、
+  // 実データモードでは実数を捏造せず未取得（null）として返す。
   return filings.map((f) => ({
     docID: f.docID,
     reporterName: f.filerName,
     targetCompany: f.docDescription,
-    holdingRate: 5.0,
-    holdingShares: 100_000,
+    holdingRate: null,
+    holdingShares: null,
     submitDateTime: f.submitDateTime,
     changeType: "変更" as const,
   }));
@@ -79,9 +81,23 @@ export function searchCompanies(query: string) {
 export async function getCompanyDetail(edinetCode: string): Promise<CompanyDetail | null> {
   if (isDemoMode()) return getMockCompanyDetail(edinetCode);
 
-  // Real implementation: fetch filings and parse XBRL
-  // TODO: implement XBRL parsing when API key available
-  return getMockCompanyDetail(edinetCode);
+  // 実データモード: 財務数値の算出には書類本文（XBRL）の解析が必要でここでは未対応。
+  // 当日の開示書類一覧（有報・四半期）から該当銘柄の実データのみを組み立てて返す。
+  // 対象銘柄が本日の開示一覧に含まれない場合は null（404）。
+  const today = new Date().toISOString().slice(0, 10);
+  const [annual, quarterly] = await Promise.all([
+    getFilings(today, 2),
+    getFilings(today, 4),
+  ]);
+  const matched = [...annual, ...quarterly].filter((f) => f.edinetCode === edinetCode);
+  if (matched.length === 0) return null;
+
+  return {
+    edinetCode,
+    filerName: matched[0].filerName,
+    financials: [], // 実データモードでは財務数値未提供（XBRL解析が必要）
+    recentFilings: matched,
+  };
 }
 
 // ─── 統計 ─────────────────────────────────────────────────────

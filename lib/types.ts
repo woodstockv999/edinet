@@ -48,8 +48,8 @@ export interface BulkReport {
   reporterName: string;    // 大量保有者名
   targetCompany: string;   // 発行者名
   targetCode?: string;     // 銘柄コード
-  holdingRate: number;     // 保有割合 (%)
-  holdingShares: number;   // 保有株式数（千株）
+  holdingRate: number | null;     // 保有割合 (%)（実データモードではXBRL未解析のためnull）
+  holdingShares: number | null;   // 保有株式数（千株）（実データモードではXBRL未解析のためnull）
   submitDateTime: string;
   changeType: "新規" | "増加" | "減少" | "変更";
   previousRate?: number;

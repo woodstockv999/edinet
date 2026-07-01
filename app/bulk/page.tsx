@@ -58,7 +58,7 @@ export default async function BulkPage() {
             <tbody className="divide-y divide-paper-border">
               {reports.map((r) => {
                 const s = CHANGE_STYLE[r.changeType];
-                const rateChange = r.previousRate != null ? r.holdingRate - r.previousRate : null;
+                const rateChange = r.holdingRate != null && r.previousRate != null ? r.holdingRate - r.previousRate : null;
                 return (
                   <tr key={r.docID} className="hover:bg-paper transition-colors">
                     <td className="px-3 py-2.5">
@@ -74,7 +74,7 @@ export default async function BulkPage() {
                     </td>
                     <td className="px-3 py-2.5 text-ink-muted max-w-[200px] truncate">{r.reporterName}</td>
                     <td className={`px-3 py-2.5 tabular-nums font-bold ${s.text}`}>
-                      {r.holdingRate.toFixed(2)}%
+                      {r.holdingRate != null ? `${r.holdingRate.toFixed(2)}%` : "詳細不明"}
                     </td>
                     <td className="px-3 py-2.5 tabular-nums">
                       {rateChange != null ? (
@@ -83,7 +83,7 @@ export default async function BulkPage() {
                         </span>
                       ) : "—"}
                     </td>
-                    <td className="px-3 py-2.5 tabular-nums text-ink-muted">{formatShares(r.holdingShares)}</td>
+                    <td className="px-3 py-2.5 tabular-nums text-ink-muted">{r.holdingShares != null ? formatShares(r.holdingShares) : "詳細不明"}</td>
                     <td className="px-3 py-2.5 text-ink-faint tabular-nums whitespace-nowrap">
                       {formatSubmitDate(r.submitDateTime)}
                     </td>
@@ -99,7 +99,7 @@ export default async function BulkPage() {
       <div className="md:hidden space-y-3">
         {reports.map((r) => {
           const s = CHANGE_STYLE[r.changeType];
-          const rateChange = r.previousRate != null ? r.holdingRate - r.previousRate : null;
+          const rateChange = r.holdingRate != null && r.previousRate != null ? r.holdingRate - r.previousRate : null;
           return (
             <div key={r.docID} className="bg-paper-surface border border-paper-border rounded-lg p-4">
               <div className="flex items-start justify-between gap-2 mb-2">
@@ -110,12 +110,12 @@ export default async function BulkPage() {
                   <p className="text-sm font-semibold text-ink mt-1.5">{r.targetCompany}</p>
                 </div>
                 <p className={`text-lg font-bold tabular-nums ${s.text}`}>
-                  {r.holdingRate.toFixed(2)}%
+                  {r.holdingRate != null ? `${r.holdingRate.toFixed(2)}%` : "詳細不明"}
                 </p>
               </div>
               <p className="text-xs text-ink-muted">{r.reporterName}</p>
               <div className="flex items-center justify-between mt-2">
-                <p className="text-2xs text-ink-faint">{formatShares(r.holdingShares)}</p>
+                <p className="text-2xs text-ink-faint">{r.holdingShares != null ? formatShares(r.holdingShares) : "詳細不明"}</p>
                 {rateChange != null && (
                   <p className={`text-2xs ${rateChange > 0 ? "text-pos" : "text-neg"}`}>
                     {rateChange > 0 ? "+" : ""}{rateChange.toFixed(2)}pp
