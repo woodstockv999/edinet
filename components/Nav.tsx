@@ -21,8 +21,16 @@ export default function Nav({ demoMode }: { demoMode: boolean }) {
 
   return (
     <header className="bg-navy sticky top-0 z-30 shadow-lg">
+      {/* パンくず行（ポータル › アプリ名。BASEと同じ構成） */}
+      <div className="max-w-6xl mx-auto px-4 pt-2.5 flex items-center gap-1.5 text-2xs">
+        <a href="/" className="text-navy-muted transition-colors hover:text-white/80" title="アプリ一覧へ戻る">
+          🏠 ポータル
+        </a>
+        <span className="text-navy-muted/70">›</span>
+        <span className="text-white font-semibold">📄 EDINET</span>
+      </div>
       {/* ロゴ行 */}
-      <div className="max-w-6xl mx-auto px-4 pt-3 pb-1 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-4 pt-1.5 pb-1 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5 group">
           <span className="w-1 h-5 bg-accent rounded-sm" />
           <span className="text-sm font-bold text-white tracking-tight">EDINET Explorer</span>
